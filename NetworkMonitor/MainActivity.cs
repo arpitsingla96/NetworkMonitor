@@ -14,13 +14,15 @@ namespace NetworkMonitor
 	[Activity (Label = "NetworkMonitor", MainLauncher = true, Icon = "@drawable/icon")]
 	public class MainActivity : Activity
 	{
-		
+		private TableLayout appDataTable;
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
 
 			// Set our view from the "main" layout resource
-			SetContentView (Resource.Layout.Main);
+			SetContentView(Resource.Layout.Main);
+			appDataTable = FindViewById<TableLayout>(Resource.Id.appData);
 
 			const string dirpath = "/proc/uid_stat";
 			string[] subDirectories = Directory.GetDirectories(dirpath,"*");
@@ -50,7 +52,7 @@ namespace NetworkMonitor
 					} catch (Exception e) {
 						Console.WriteLine ("{0} Exception caught", e);
 					}
-					if (packagesName.Length > 1) {
+					if (packagesName!=null && packagesName.Length > 1) {
 						try {
 							packageName = PackageManager.GetNameForUid (uid);
 						} catch (Exception e) {
@@ -73,6 +75,19 @@ namespace NetworkMonitor
 						}
 					}
 				}
+				var tr = new TableRow(this) ;
+				TextView c1 = new TextView (this);
+				c1.SetText (appName, TextView.BufferType.Editable);
+				TextView c2 = new TextView (this);
+				c2.SetText (upData.ToString(), TextView.BufferType.Editable);
+				TextView c3 = new TextView (this);
+				c3.SetText (downData.ToString(), TextView.BufferType.Editable);
+				tr.AddView (c1);
+				tr.AddView (c2);
+				tr.AddView (c3);
+				try {appDataTable.AddView (tr);}
+				catch  (Exception e) {Console.WriteLine ("{0} Exception caught", e);}
+
 				Log.Debug (uidText, appName);
 			}
 
