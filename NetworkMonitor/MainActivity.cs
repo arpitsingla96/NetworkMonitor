@@ -42,9 +42,17 @@ namespace NetworkMonitor
 				string[] packagesName = PackageManager.GetPackagesForUid (uid);
 				foreach(string packageName in packagesName)
 				{
-					string appName = PackageManager.GetApplicationLabel(PackageManager.GetApplicationInfo (packageName, 0));
+					string appName = "";
+					try
+					{
+						appName = PackageManager.GetApplicationLabel(PackageManager.GetApplicationInfo (packageName, 0));
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine ("{0} Exception caught", e);
+					}
 					Log.Debug ("uid", uidText);
-					Log.Debug ("packagename", appName);
+					Log.Debug ("appname", appName);
 				}
 
 			}
