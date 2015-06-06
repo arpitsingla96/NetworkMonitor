@@ -39,8 +39,12 @@ namespace NetworkMonitor
 				long downData = Convert.ToInt64 (downDataText);
 				long totalDataPerUid = upData + downData;
 
-				string packageName = PackageManager.GetNameForUid (uid);
-				Log.Debug ("packagename", packageName);
+				string[] packagesName = PackageManager.GetPackagesForUid (uid);
+				foreach(string packageName in packagesName)
+				{
+					Log.Debug ("uid", uidText);
+					Log.Debug ("packagename", packageName);
+				}
 
 			}
 
