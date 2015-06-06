@@ -30,7 +30,9 @@ namespace NetworkMonitor
 				string upFile = subDirectory + "/tcp_snd";
 				string upDataText = File.ReadAllText (downFile);
 				string downDataText = File.ReadAllText (upFile);
-				Log.Debug ("updatatext", upDataText);
+				long upData = Convert.ToInt64 (upDataText);
+				long downData = Convert.ToInt64 (downDataText);
+
 			}
 
 		}
