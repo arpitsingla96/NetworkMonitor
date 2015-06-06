@@ -27,7 +27,7 @@ namespace NetworkMonitor
 			foreach (string subDirectory in subDirectories) 
 			{
 				string uidText = subDirectory.Split ('/')[3];
-				long uid = Convert.ToInt64 (uidText);
+				int uid = Convert.ToInt32 (uidText);
 
 				string downFile = subDirectory + "/tcp_rcv";
 				string upFile = subDirectory + "/tcp_snd";
@@ -39,7 +39,8 @@ namespace NetworkMonitor
 				long downData = Convert.ToInt64 (downDataText);
 				long totalDataPerUid = upData + downData;
 
-				Log.Debug ("uidtext", uidText);
+				string packageName = PackageManager.GetNameForUid (uid);
+				Log.Debug ("packagename", packageName);
 
 			}
 
