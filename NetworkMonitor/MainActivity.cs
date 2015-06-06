@@ -26,12 +26,20 @@ namespace NetworkMonitor
 			string[] subDirectories = Directory.GetDirectories(dirpath,"*");
 			foreach (string subDirectory in subDirectories) 
 			{
+				string uidText = subDirectory.Split ('/')[3];
+				long uid = Convert.ToInt64 (uidText);
+
 				string downFile = subDirectory + "/tcp_rcv";
 				string upFile = subDirectory + "/tcp_snd";
+
 				string upDataText = File.ReadAllText (downFile);
 				string downDataText = File.ReadAllText (upFile);
+
 				long upData = Convert.ToInt64 (upDataText);
 				long downData = Convert.ToInt64 (downDataText);
+				long totalDataPerUid = upData + downData;
+
+				Log.Debug ("uidtext", uidText);
 
 			}
 
