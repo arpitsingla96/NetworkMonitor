@@ -39,22 +39,41 @@ namespace NetworkMonitor
 				long downData = Convert.ToInt64 (downDataText);
 				long totalDataPerUid = upData + downData;
 
-				string[] packagesName = PackageManager.GetPackagesForUid (uid);
-				foreach(string packageName in packagesName)
-				{
-					string appName = "";
-					try
-					{
-						appName = PackageManager.GetApplicationLabel(PackageManager.GetApplicationInfo (packageName, 0));
-					}
-					catch (Exception e)
-					{
+				string appName = "";
+				string packageName = "";
+				string[] packagesName = { };
+				if (uid == 2000 || uid == 1000) {
+					appName = "System";
+				} else {
+					try {
+						packagesName = PackageManager.GetPackagesForUid (uid);
+					} catch (Exception e) {
 						Console.WriteLine ("{0} Exception caught", e);
 					}
-					Log.Debug ("uid", uidText);
-					Log.Debug ("appname", appName);
+					if (packagesName.Length > 1) {
+						try {
+							packageName = PackageManager.GetNameForUid (uid);
+						} catch (Exception e) {
+							Console.WriteLine ("{0} Exception caught", e);
+						}
+						if (packageName.Split (':') [0] == "android.media") {
+							appName = "Media";
+						} else if (packageName.Split (':') [0] == "com.google.android.calendar.uid.shared") {
+							appName = "Calender";
+						} else if (packageName.Split (':') [0] == "com.google.uid.shared") {
+							appName = "Contacts";
+						} else {
+							appName = "System";
+						}
+					} else {
+						try {
+							appName = PackageManager.GetApplicationLabel (PackageManager.GetApplicationInfo (packagesName [0], 0));
+						} catch (Exception e) {
+							Console.WriteLine ("{0} Exception caught", e);
+						}
+					}
 				}
-
+				Log.Debug (uidText, appName);
 			}
 
 		}
