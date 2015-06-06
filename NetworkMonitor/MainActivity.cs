@@ -22,7 +22,7 @@ namespace NetworkMonitor
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
-			string dirpath = "/proc/uid_stat";
+			const string dirpath = "/proc/uid_stat";
 			string[] subDirectories = Directory.GetDirectories(dirpath,"*");
 			foreach (string subDirectory in subDirectories) 
 			{
