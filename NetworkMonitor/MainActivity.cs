@@ -26,9 +26,11 @@ namespace NetworkMonitor
 			string[] subDirectories = Directory.GetDirectories(dirpath,"*");
 			foreach (string subDirectory in subDirectories) 
 			{
-				string downfile = subDirectory + "/tcp_rcv";
-				string upfile = subDirectory + "/tcp_snd";
-				Log.Debug("upfile" , upfile);
+				string downFile = subDirectory + "/tcp_rcv";
+				string upFile = subDirectory + "/tcp_snd";
+				string upDataText = File.ReadAllText (downFile);
+				string downDataText = File.ReadAllText (upFile);
+				Log.Debug ("updatatext", upDataText);
 			}
 
 		}
