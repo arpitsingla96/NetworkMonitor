@@ -28,13 +28,18 @@ namespace NetworkMonitor
 			var tablerow = new TableRow(this) ;
 			TextView t0 = new TextView (this);
 			t0.SetText ("Icon", TextView.BufferType.Editable);
+			t0.SetPadding (5, 5, 5, 5);
 			TextView t1 = new TextView (this);
+			t1.SetPadding (5, 5, 5, 5);
 			t1.SetText ("Appname", TextView.BufferType.Editable);
 			TextView t2 = new TextView (this);
+			t2.SetPadding (5, 5, 5, 5);
 			t2.SetText ("Updata", TextView.BufferType.Editable);
 			TextView t3 = new TextView (this);
+			t3.SetPadding (5, 5, 5, 5);
 			t3.SetText ("DownData", TextView.BufferType.Editable);
 			TextView t4 = new TextView (this);
+			t4.SetPadding (5, 5, 5, 5);
 			t4.SetText ("TotalData", TextView.BufferType.Editable);
 			tablerow.AddView (t0);
 			tablerow.AddView (t1);
@@ -105,14 +110,19 @@ namespace NetworkMonitor
 				}
 				var tr = new TableRow(this) ;
 				ImageView c0 = new ImageView (this);
+				c0.SetPadding (5, 5, 5, 5);
 				c0.SetImageDrawable (appIcon);
 				TextView c1 = new TextView (this);
+				c1.SetPadding (5, 5, 5, 5);
 				c1.SetText (appName, TextView.BufferType.Editable);
 				TextView c2 = new TextView (this);
+				c2.SetPadding (5, 5, 5, 5);
 				c2.SetText (upDataText, TextView.BufferType.Editable);
 				TextView c3 = new TextView (this);
+				c3.SetPadding (5, 5, 5, 5);
 				c3.SetText (downDataText, TextView.BufferType.Editable);
 				TextView c4 = new TextView (this);
+				c4.SetPadding (5, 5, 5, 5);
 				c4.SetText (totalDataPerUidText, TextView.BufferType.Editable);
 				tr.AddView (c0);
 				tr.AddView (c1);
