@@ -24,30 +24,7 @@ namespace NetworkMonitor
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
 			appDataTable = FindViewById<TableLayout>(Resource.Id.appData);
-
-			var tablerow = new TableRow(this) ;
-			TextView t0 = new TextView (this);
-			t0.SetText ("Icon", TextView.BufferType.Editable);
-			t0.SetPadding (7, 7, 7, 7);
-			TextView t1 = new TextView (this);
-			t1.SetPadding (7, 7, 7, 7);
-			t1.SetText ("Appname", TextView.BufferType.Editable);
-			TextView t2 = new TextView (this);
-			t2.SetPadding (7, 7, 7, 7);
-			t2.SetText ("Updata", TextView.BufferType.Editable);
-			TextView t3 = new TextView (this);
-			t3.SetPadding (7, 7, 7, 7);
-			t3.SetText ("DownData", TextView.BufferType.Editable);
-			TextView t4 = new TextView (this);
-			t4.SetPadding (7, 7, 7, 7);
-			t4.SetText ("TotalData", TextView.BufferType.Editable);
-			tablerow.AddView (t0);
-			tablerow.AddView (t1);
-			tablerow.AddView (t2);
-			tablerow.AddView (t3);
-			tablerow.AddView (t4);
-			try {appDataTable.AddView (tablerow);}
-			catch  (Exception e) {Console.WriteLine ("{0} Exception caught", e);}
+			setTableRow ();
 
 			const string dirpath = "/proc/uid_stat";
 			string[] subDirectories = Directory.GetDirectories(dirpath,"*");
@@ -74,32 +51,7 @@ namespace NetworkMonitor
 				string appName = getAppNameForUid (uid);
 				Drawable appIcon = getIconForUid (uid);
 
-				var tr = new TableRow(this) ;
-				ImageView c0 = new ImageView (this);
-				c0.SetPadding (7, 7, 7, 7);
-				c0.SetImageDrawable (appIcon);
-				TextView c1 = new TextView (this);
-				c1.SetPadding (7, 7, 7, 7);
-				c1.TextSize = 20;
-				c1.SetWidth(225);
-				c1.SetHorizontallyScrolling (true);
-				c1.SetText (appName, TextView.BufferType.Editable);
-				TextView c2 = new TextView (this);
-				c2.SetPadding (7, 7, 7, 7);
-				c2.SetText (upDataText, TextView.BufferType.Editable);
-				TextView c3 = new TextView (this);
-				c3.SetPadding (7, 7, 7, 7);
-				c3.SetText (downDataText, TextView.BufferType.Editable);
-				TextView c4 = new TextView (this);
-				c4.SetPadding (7, 7, 7, 7);
-				c4.SetText (totalDataPerUidText, TextView.BufferType.Editable);
-				tr.AddView (c0);
-				tr.AddView (c1);
-				tr.AddView (c2);
-				tr.AddView (c3);
-				tr.AddView (c4);
-				try {appDataTable.AddView (tr);}
-				catch  (Exception e) {Console.WriteLine ("{0} Exception caught", e);}
+				setTableRow (appName, upDataText, downDataText, totalDataPerUidText, appIcon);
 
 				Log.Debug (uidText, appName);
 			}
@@ -187,6 +139,44 @@ namespace NetworkMonitor
 				}
 			}
 			return appIcon;
+		}
+
+		public void setTableRow (string appName = "AppName", string upDataText = "Upload", string downDataText = "Download", string totalDataPerUidText = "Total", Drawable appIcon = null)
+		{
+			var tr = new TableRow(this) ;
+			if (appIcon != null) {
+				ImageView c0 = new ImageView (this);
+				c0.SetPadding (7, 7, 7, 7);
+				c0.SetImageDrawable (appIcon);
+				tr.AddView (c0);
+			} else {
+				TextView c0 = new TextView (this);
+				c0.SetPadding (7, 7, 7, 7);
+				c0.SetText ("AppIcon", TextView.BufferType.Editable);
+				tr.AddView (c0);
+			}
+			TextView c1 = new TextView (this);
+			c1.SetPadding (7, 7, 7, 7);
+			if (appName != "AppName") {
+				c1.TextSize = 20;
+				c1.SetWidth (225);
+			}
+			c1.SetText (appName, TextView.BufferType.Editable);
+			TextView c2 = new TextView (this);
+			c2.SetPadding (7, 7, 7, 7);
+			c2.SetText (upDataText, TextView.BufferType.Editable);
+			TextView c3 = new TextView (this);
+			c3.SetPadding (7, 7, 7, 7);
+			c3.SetText (downDataText, TextView.BufferType.Editable);
+			TextView c4 = new TextView (this);
+			c4.SetPadding (7, 7, 7, 7);
+			c4.SetText (totalDataPerUidText, TextView.BufferType.Editable);
+			tr.AddView (c1);
+			tr.AddView (c2);
+			tr.AddView (c3);
+			tr.AddView (c4);
+			try {appDataTable.AddView (tr);}
+			catch  (Exception e) {Console.WriteLine ("{0} Exception caught", e);}
 		}
 	}
 }
