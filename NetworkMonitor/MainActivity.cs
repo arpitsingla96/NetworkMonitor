@@ -56,10 +56,15 @@ namespace NetworkMonitor
 
 				string upDataText = File.ReadAllText (downFile);
 				string downDataText = File.ReadAllText (upFile);
+				string totalDataPerUidText = "";
 
 				long upData = Convert.ToInt64 (upDataText);
 				long downData = Convert.ToInt64 (downDataText);
 				long totalDataPerUid = upData + downData;
+
+				upDataText = unitConversion (upData);
+				downDataText = unitConversion (downData);
+				totalDataPerUidText = unitConversion (totalDataPerUid);
 
 				Drawable appIcon = Resources.GetDrawable(Resource.Drawable.Icon);
 
@@ -104,11 +109,11 @@ namespace NetworkMonitor
 				TextView c1 = new TextView (this);
 				c1.SetText (appName, TextView.BufferType.Editable);
 				TextView c2 = new TextView (this);
-				c2.SetText (upData.ToString(), TextView.BufferType.Editable);
+				c2.SetText (upDataText, TextView.BufferType.Editable);
 				TextView c3 = new TextView (this);
-				c3.SetText (downData.ToString(), TextView.BufferType.Editable);
+				c3.SetText (downDataText, TextView.BufferType.Editable);
 				TextView c4 = new TextView (this);
-				c4.SetText (totalDataPerUid.ToString(), TextView.BufferType.Editable);
+				c4.SetText (totalDataPerUidText, TextView.BufferType.Editable);
 				tr.AddView (c0);
 				tr.AddView (c1);
 				tr.AddView (c2);
@@ -120,6 +125,27 @@ namespace NetworkMonitor
 				Log.Debug (uidText, appName);
 			}
 
+		}
+
+		public string unitConversion (long data)
+		{
+			string dataText = "";
+			if (data < 1024) {
+				dataText = data + "B";
+			}
+			if (data > 1024) {
+				data = data / 1024;
+				dataText = data + "KB";
+			}
+			if (data > 1024) {
+				data = data / 1024;
+				dataText = data + "MB";
+			}
+			if (data > 1024) {
+				data = data / 1024;
+				dataText = data + "GB";
+			}
+			return dataText;
 		}
 	}
 }
