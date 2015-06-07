@@ -28,18 +28,18 @@ namespace NetworkMonitor
 			var tablerow = new TableRow(this) ;
 			TextView t0 = new TextView (this);
 			t0.SetText ("Icon", TextView.BufferType.Editable);
-			t0.SetPadding (5, 5, 5, 5);
+			t0.SetPadding (7, 7, 7, 7);
 			TextView t1 = new TextView (this);
-			t1.SetPadding (5, 5, 5, 5);
+			t1.SetPadding (7, 7, 7, 7);
 			t1.SetText ("Appname", TextView.BufferType.Editable);
 			TextView t2 = new TextView (this);
-			t2.SetPadding (5, 5, 5, 5);
+			t2.SetPadding (7, 7, 7, 7);
 			t2.SetText ("Updata", TextView.BufferType.Editable);
 			TextView t3 = new TextView (this);
-			t3.SetPadding (5, 5, 5, 5);
+			t3.SetPadding (7, 7, 7, 7);
 			t3.SetText ("DownData", TextView.BufferType.Editable);
 			TextView t4 = new TextView (this);
-			t4.SetPadding (5, 5, 5, 5);
+			t4.SetPadding (7, 7, 7, 7);
 			t4.SetText ("TotalData", TextView.BufferType.Editable);
 			tablerow.AddView (t0);
 			tablerow.AddView (t1);
@@ -63,66 +63,35 @@ namespace NetworkMonitor
 				string downDataText = File.ReadAllText (upFile);
 				string totalDataPerUidText = "";
 
-				long upData = Convert.ToInt64 (upDataText);
-				long downData = Convert.ToInt64 (downDataText);
-				long totalDataPerUid = upData + downData;
+				double upData = Convert.ToInt64 (upDataText);
+				double downData = Convert.ToInt64 (downDataText);
+				double totalDataPerUid = upData + downData;
 
 				upDataText = unitConversion (upData);
 				downDataText = unitConversion (downData);
 				totalDataPerUidText = unitConversion (totalDataPerUid);
 
-				Drawable appIcon = Resources.GetDrawable(Resource.Drawable.Icon);
+				string appName = getAppNameForUid (uid);
+				Drawable appIcon = getIconForUid (uid);
 
-				string appName = "";
-				string packageName = "";
-				string[] packagesName = { };
-				if (uid == 2000 || uid == 1000) {
-					appName = "System";
-				} else {
-					try {
-						packagesName = PackageManager.GetPackagesForUid (uid);
-					} catch (Exception e) {
-						Console.WriteLine ("{0} Exception caught", e);
-					}
-					if (packagesName!=null && packagesName.Length > 1) {
-						try {
-							packageName = PackageManager.GetNameForUid (uid);
-						} catch (Exception e) {
-							Console.WriteLine ("{0} Exception caught", e);
-						}
-						if (packageName.Split (':') [0] == "android.media") {
-							appName = "Media";
-						} else if (packageName.Split (':') [0] == "com.google.android.calendar.uid.shared") {
-							appName = "Calender";
-						} else if (packageName.Split (':') [0] == "com.google.uid.shared") {
-							appName = "Contacts";
-						} else {
-							appName = "System";
-						}
-					} else {
-						try {
-							appName = PackageManager.GetApplicationLabel (PackageManager.GetApplicationInfo (packagesName [0], 0));
-							appIcon = PackageManager.GetApplicationIcon(PackageManager.GetApplicationInfo(packagesName[0],0));								
-						} catch (Exception e) {
-							Console.WriteLine ("{0} Exception caught", e);
-						}
-					}
-				}
 				var tr = new TableRow(this) ;
 				ImageView c0 = new ImageView (this);
-				c0.SetPadding (5, 5, 5, 5);
+				c0.SetPadding (7, 7, 7, 7);
 				c0.SetImageDrawable (appIcon);
 				TextView c1 = new TextView (this);
-				c1.SetPadding (5, 5, 5, 5);
+				c1.SetPadding (7, 7, 7, 7);
+				c1.TextSize = 20;
+				c1.SetWidth(225);
+				c1.SetHorizontallyScrolling (true);
 				c1.SetText (appName, TextView.BufferType.Editable);
 				TextView c2 = new TextView (this);
-				c2.SetPadding (5, 5, 5, 5);
+				c2.SetPadding (7, 7, 7, 7);
 				c2.SetText (upDataText, TextView.BufferType.Editable);
 				TextView c3 = new TextView (this);
-				c3.SetPadding (5, 5, 5, 5);
+				c3.SetPadding (7, 7, 7, 7);
 				c3.SetText (downDataText, TextView.BufferType.Editable);
 				TextView c4 = new TextView (this);
-				c4.SetPadding (5, 5, 5, 5);
+				c4.SetPadding (7, 7, 7, 7);
 				c4.SetText (totalDataPerUidText, TextView.BufferType.Editable);
 				tr.AddView (c0);
 				tr.AddView (c1);
@@ -134,30 +103,90 @@ namespace NetworkMonitor
 
 				Log.Debug (uidText, appName);
 			}
-
 		}
 
-		public string unitConversion (long data)
+		public string unitConversion (double data)
 		{
 			string dataText = "";
 			if (data < 1024) {
+				data = Math.Round (data, 2);
 				dataText = data + "B";
 			}
 			if (data > 1024) {
 				data = data / 1024;
+				data = Math.Round (data, 2);
 				dataText = data + "KB";
 			}
 			if (data > 1024) {
 				data = data / 1024;
+				data = Math.Round (data, 2);
 				dataText = data + "MB";
 			}
 			if (data > 1024) {
 				data = data / 1024;
+				data = Math.Round (data, 2);
 				dataText = data + "GB";
 			}
 			return dataText;
 		}
+		public string getAppNameForUid(int uid)
+		{
+			string appName = "";
+			string packageName = "";
+			string[] packagesName = { };
+			if (uid == 2000 || uid == 1000) {
+				appName = "System";
+			} else {
+				try {
+					packagesName = PackageManager.GetPackagesForUid (uid);
+				} catch (Exception e) {
+					Console.WriteLine ("{0} Exception caught", e);
+				}
+				if (packagesName!=null && packagesName.Length > 1) {
+					try {
+						packageName = PackageManager.GetNameForUid (uid);
+					} catch (Exception e) {
+						Console.WriteLine ("{0} Exception caught", e);
+					}
+					if (packageName.Split (':') [0] == "android.media") {
+						appName = "Media";
+					} else if (packageName.Split (':') [0] == "com.google.android.calendar.uid.shared") {
+						appName = "Calender";
+					} else if (packageName.Split (':') [0] == "com.google.uid.shared") {
+						appName = "Contacts";
+					} else {
+						appName = "System";
+					}
+				} else {
+					try {
+						appName = PackageManager.GetApplicationLabel (PackageManager.GetApplicationInfo (packagesName [0], 0));
+					} catch (Exception e) {
+						Console.WriteLine ("{0} Exception caught", e);
+					}
+				}
+			}
+			return appName;
+		}
+
+		public Drawable getIconForUid(int uid)
+		{
+			string[] packagesName = { };
+			Drawable appIcon = Resources.GetDrawable(Resource.Drawable.Icon);
+			if (uid != 1000 && uid != 2000) {
+				try {
+					packagesName = PackageManager.GetPackagesForUid (uid);
+				} catch (Exception e) {
+					Console.WriteLine ("{0} Exception caught", e);
+				}
+				if (packagesName.Length == 1) {
+					try {
+						appIcon = PackageManager.GetApplicationIcon (PackageManager.GetApplicationInfo (packagesName [0], 0));
+					} catch (Exception e) {
+						Console.WriteLine ("{0} Exception caught", e);
+					}
+				}
+			}
+			return appIcon;
+		}
 	}
 }
-
-
