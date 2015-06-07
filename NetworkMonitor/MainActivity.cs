@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Android.Graphics.Drawables;
 using Android.Util;
 using System.IO;
 
@@ -41,6 +42,8 @@ namespace NetworkMonitor
 				long downData = Convert.ToInt64 (downDataText);
 				long totalDataPerUid = upData + downData;
 
+				Drawable appIcon = Resources.GetDrawable(Resource.Drawable.Icon);
+
 				string appName = "";
 				string packageName = "";
 				string[] packagesName = { };
@@ -70,18 +73,22 @@ namespace NetworkMonitor
 					} else {
 						try {
 							appName = PackageManager.GetApplicationLabel (PackageManager.GetApplicationInfo (packagesName [0], 0));
+							appIcon = PackageManager.GetApplicationIcon(PackageManager.GetApplicationInfo(packagesName[0],0));								
 						} catch (Exception e) {
 							Console.WriteLine ("{0} Exception caught", e);
 						}
 					}
 				}
 				var tr = new TableRow(this) ;
+				ImageView c0 = new ImageView (this);
+				c0.SetImageDrawable (appIcon);
 				TextView c1 = new TextView (this);
 				c1.SetText (appName, TextView.BufferType.Editable);
 				TextView c2 = new TextView (this);
 				c2.SetText (upData.ToString(), TextView.BufferType.Editable);
 				TextView c3 = new TextView (this);
 				c3.SetText (downData.ToString(), TextView.BufferType.Editable);
+				tr.AddView (c0);
 				tr.AddView (c1);
 				tr.AddView (c2);
 				tr.AddView (c3);
