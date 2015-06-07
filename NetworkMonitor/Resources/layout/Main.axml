@@ -2,28 +2,22 @@
 <ScrollView xmlns:p1="http://schemas.android.com/apk/res/android"
     p1:layout_height="match_parent"
     p1:layout_width="match_parent">
-    <LinearLayout
-        p1:orientation="vertical"
-        p1:minWidth="25px"
-        p1:minHeight="25px"
-        p1:layout_width="match_parent"
+    <HorizontalScrollView
         p1:layout_height="match_parent"
-        p1:id="@+id/linearLayout1">
-        <TableLayout
+        p1:layout_width="match_parent">
+        <LinearLayout
+            p1:orientation="vertical"
             p1:minWidth="25px"
             p1:minHeight="25px"
             p1:layout_width="match_parent"
-            p1:layout_height="wrap_content"
-            p1:id="@+id/appData">
-            <TableRow
-                p1:id="@+id/tableRow1">
-            </TableRow>
-            <TableRow
-                p1:id="@+id/tableRow2">
-            </TableRow>
-            <TableRow
-                p1:id="@+id/tableRow3">
-            </TableRow>
-        </TableLayout>
-    </LinearLayout>
+            p1:layout_height="match_parent"
+            p1:id="@+id/linearLayout1">
+            <TableLayout
+                p1:minWidth="25px"
+                p1:minHeight="25px"
+                p1:layout_width="match_parent"
+                p1:layout_height="wrap_content"
+                p1:id="@+id/appData" />
+        </LinearLayout>
+    </HorizontalScrollView>
 </ScrollView>
