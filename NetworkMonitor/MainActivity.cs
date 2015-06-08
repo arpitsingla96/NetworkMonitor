@@ -24,15 +24,19 @@ namespace NetworkMonitor
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.Main);
 			appDataTable = FindViewById<TableLayout>(Resource.Id.appData);
+			// Set headings of table
 			setTableRow ();
 
 			const string dirpath = "/proc/uid_stat";
+			// Getting all the subdirectories /proc/uid_stat/*
 			string[] subDirectories = Directory.GetDirectories(dirpath,"*");
 			foreach (string subDirectory in subDirectories) 
 			{
+				// Get uid from the name of each subdirectory
 				string uidText = subDirectory.Split ('/')[3];
 				int uid = Convert.ToInt32 (uidText);
 
+				// Reading files which contain data in each subdirectory
 				string downFile = subDirectory + "/tcp_rcv";
 				string upFile = subDirectory + "/tcp_snd";
 
@@ -44,43 +48,25 @@ namespace NetworkMonitor
 				double downData = Convert.ToInt64 (downDataText);
 				double totalDataPerUid = upData + downData;
 
-				upDataText = unitConversion (upData);
-				downDataText = unitConversion (downData);
-				totalDataPerUidText = unitConversion (totalDataPerUid);
+				// Convert bytes to suitable units
+				var unitConverter = new UnitConverter();
+				upDataText = unitConverter.unitConversion (upData);
+				downDataText = unitConverter.unitConversion (downData);
+				totalDataPerUidText = unitConverter.unitConversion (totalDataPerUid);
 
+				// Get appName and appIcon for each uid
 				string appName = getAppNameForUid (uid);
 				Drawable appIcon = getIconForUid (uid);
 
+				// Appending items to view
 				setTableRow (appName, upDataText, downDataText, totalDataPerUidText, appIcon);
 
 				Log.Debug (uidText, appName);
 			}
 		}
 
-		public string unitConversion (double data)
-		{
-			string dataText = "";
-			if (data < 1024) {
-				data = Math.Round (data, 2);
-				dataText = data + "B";
-			}
-			if (data > 1024) {
-				data = data / 1024;
-				data = Math.Round (data, 2);
-				dataText = data + "KB";
-			}
-			if (data > 1024) {
-				data = data / 1024;
-				data = Math.Round (data, 2);
-				dataText = data + "MB";
-			}
-			if (data > 1024) {
-				data = data / 1024;
-				data = Math.Round (data, 2);
-				dataText = data + "GB";
-			}
-			return dataText;
-		}
+
+
 		public string getAppNameForUid(int uid)
 		{
 			string appName = "";
@@ -178,5 +164,6 @@ namespace NetworkMonitor
 			try {appDataTable.AddView (tr);}
 			catch  (Exception e) {Console.WriteLine ("{0} Exception caught", e);}
 		}
+
 	}
 }
