@@ -27,6 +27,9 @@ namespace NetworkMonitor
 			// Set headings of table
 			setTableRow ();
 
+			// Instantiating an object of class
+			GetAppDetails getAppDetails = new GetAppDetails();
+
 			const string dirpath = "/proc/uid_stat";
 			// Getting all the subdirectories /proc/uid_stat/*
 			string[] subDirectories = Directory.GetDirectories(dirpath,"*");
@@ -55,7 +58,7 @@ namespace NetworkMonitor
 				totalDataPerUidText = unitConverter.unitConversion (totalDataPerUid);
 
 				// Get appName and appIcon for each uid
-				string appName = getAppNameForUid (uid);
+				string appName = getAppDetails.getAppNameForUid (uid);
 				Drawable appIcon = getIconForUid (uid);
 
 				// Appending items to view
@@ -63,47 +66,6 @@ namespace NetworkMonitor
 
 				Log.Debug (uidText, appName);
 			}
-		}
-
-
-
-		public string getAppNameForUid(int uid)
-		{
-			string appName = "";
-			string packageName = "";
-			string[] packagesName = { };
-			if (uid == 2000 || uid == 1000) {
-				appName = "System";
-			} else {
-				try {
-					packagesName = PackageManager.GetPackagesForUid (uid);
-				} catch (Exception e) {
-					Console.WriteLine ("{0} Exception caught", e);
-				}
-				if (packagesName!=null && packagesName.Length > 1) {
-					try {
-						packageName = PackageManager.GetNameForUid (uid);
-					} catch (Exception e) {
-						Console.WriteLine ("{0} Exception caught", e);
-					}
-					if (packageName.Split (':') [0] == "android.media") {
-						appName = "Media";
-					} else if (packageName.Split (':') [0] == "com.google.android.calendar.uid.shared") {
-						appName = "Calender";
-					} else if (packageName.Split (':') [0] == "com.google.uid.shared") {
-						appName = "Contacts";
-					} else {
-						appName = "System";
-					}
-				} else {
-					try {
-						appName = PackageManager.GetApplicationLabel (PackageManager.GetApplicationInfo (packagesName [0], 0));
-					} catch (Exception e) {
-						Console.WriteLine ("{0} Exception caught", e);
-					}
-				}
-			}
-			return appName;
 		}
 
 		public Drawable getIconForUid(int uid)
