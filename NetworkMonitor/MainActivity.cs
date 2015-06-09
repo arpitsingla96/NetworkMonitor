@@ -22,18 +22,22 @@ namespace NetworkMonitor
 			base.OnCreate (bundle);
 
 			// Set our view from the "main" layout resource
-			SetContentView(Resource.Layout.Main);
-			appDataTable = FindViewById<TableLayout>(Resource.Id.appData);
+			SetContentView (Resource.Layout.Main);
+			appDataTable = FindViewById<TableLayout> (Resource.Id.appData);
 			// Set headings of table
 			setTableRow ();
+			mainFunction ();
 
+		}
+
+		public void mainFunction()
+		{
 			const string dirpath = "/proc/uid_stat";
 			// Getting all the subdirectories /proc/uid_stat/*
-			string[] subDirectories = Directory.GetDirectories(dirpath,"*");
-			foreach (string subDirectory in subDirectories) 
-			{
+			string[] subDirectories = Directory.GetDirectories (dirpath, "*");
+			foreach (string subDirectory in subDirectories) {
 				// Get uid from the name of each subdirectory
-				string uidText = subDirectory.Split ('/')[3];
+				string uidText = subDirectory.Split ('/') [3];
 				int uid = Convert.ToInt32 (uidText);
 
 				// Reading files which contain data in each subdirectory
@@ -49,7 +53,7 @@ namespace NetworkMonitor
 				double totalDataPerUid = upData + downData;
 
 				// Convert bytes to suitable units
-				var unitConverter = new UnitConverter();
+				var unitConverter = new UnitConverter ();
 				upDataText = unitConverter.unitConversion (upData);
 				downDataText = unitConverter.unitConversion (downData);
 				totalDataPerUidText = unitConverter.unitConversion (totalDataPerUid);
@@ -66,8 +70,7 @@ namespace NetworkMonitor
 		}
 
 
-
-		public string getAppNameForUid(int uid)
+		public string getAppNameForUid (int uid)
 		{
 			string appName = "";
 			string packageName = "";
@@ -80,7 +83,7 @@ namespace NetworkMonitor
 				} catch (Exception e) {
 					Console.WriteLine ("{0} Exception caught", e);
 				}
-				if (packagesName!=null && packagesName.Length > 1) {
+				if (packagesName != null && packagesName.Length > 1) {
 					try {
 						packageName = PackageManager.GetNameForUid (uid);
 					} catch (Exception e) {
@@ -106,10 +109,10 @@ namespace NetworkMonitor
 			return appName;
 		}
 
-		public Drawable getIconForUid(int uid)
+		public Drawable getIconForUid (int uid)
 		{
 			string[] packagesName = { };
-			Drawable appIcon = Resources.GetDrawable(Resource.Drawable.Icon);
+			Drawable appIcon = Resources.GetDrawable (Resource.Drawable.Icon);
 			if (uid != 1000 && uid != 2000) {
 				try {
 					packagesName = PackageManager.GetPackagesForUid (uid);
@@ -129,7 +132,7 @@ namespace NetworkMonitor
 
 		public void setTableRow (string appName = "AppName", string upDataText = "Upload", string downDataText = "Download", string totalDataPerUidText = "Total", Drawable appIcon = null)
 		{
-			var tr = new TableRow(this) ;
+			var tr = new TableRow (this);
 			if (appIcon != null) {
 				ImageView c0 = new ImageView (this);
 				c0.SetPadding (7, 7, 7, 7);
@@ -161,8 +164,11 @@ namespace NetworkMonitor
 			tr.AddView (c2);
 			tr.AddView (c3);
 			tr.AddView (c4);
-			try {appDataTable.AddView (tr);}
-			catch  (Exception e) {Console.WriteLine ("{0} Exception caught", e);}
+			try {
+				appDataTable.AddView (tr);
+			} catch (Exception e) {
+				Console.WriteLine ("{0} Exception caught", e);
+			}
 		}
 
 	}
