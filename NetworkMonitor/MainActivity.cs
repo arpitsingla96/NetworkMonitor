@@ -30,7 +30,7 @@ namespace NetworkMonitor
 			appDataTable = FindViewById<TableLayout> (Resource.Id.appData);
 
 			// Set headings of table
-			AppData data = new AppData(this,0, "",0,0,0);
+			AppData data = new AppData(this);
 			data.setTableHeading(appDataTable);
 
 			mainFunction ();
@@ -81,7 +81,10 @@ namespace NetworkMonitor
 				} catch (Exception e) {
 					Console.WriteLine ("{0} Exception caught", e);
 				}
-				if (packagesName != null && packagesName.Length > 1) {
+				if (packagesName == null) {
+					appName = "System";
+				}
+				else if (packagesName.Length > 1) {
 					try {
 						packageName = PackageManager.GetNameForUid (uid);
 					} catch (Exception e) {
@@ -117,7 +120,7 @@ namespace NetworkMonitor
 				} catch (Exception e) {
 					Console.WriteLine ("{0} Exception caught", e);
 				}
-				if (packagesName.Length == 1) {
+				if (packagesName!=null && packagesName.Length == 1) {
 					try {
 						appIcon = PackageManager.GetApplicationIcon (PackageManager.GetApplicationInfo (packagesName [0], 0));
 					} catch (Exception e) {
@@ -138,7 +141,7 @@ namespace NetworkMonitor
 				data.appendTableRow (appDataTable);
 			} else {
 				// If the dictionary does not contain appName
-				data = new AppData (this, id, appName, upData, downData, totalDataPerUid, appIcon);
+				data = new AppData (this,appName, upData, downData, totalDataPerUid, appIcon);
 				d.Add (appName, data);
 				data.addTableRowToTableLayout (appDataTable);
 				id++;

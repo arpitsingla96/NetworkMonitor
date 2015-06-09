@@ -1,32 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Android.App;
 using Android.Content;
-using Android.Runtime;
-using Android.Views;
 using Android.Widget;
-using Android.OS;
 using Android.Graphics.Drawables;
 using Android.Util;
-using System.IO;
-using System.Collections.Generic;
-
 
 namespace NetworkMonitor
 {
 	public class AppData : Activity
 	{
-		private int upId, downId, totalId;
 		private TableRow tr = null;
 		private Drawable appIcon;
 		private double upData, downData, totalDataPerUid;
 		private string upDataText, downDataText, totalDataPerUidText, appName;
 		private Context context;
-		public AppData()
+		private TextView upTextView, downTextView, totalTextView;
+		public AppData(Context context)
 		{
+			this.context = context;
+			this.tr = new TableRow(this.context);
 		}
 
-		public AppData (Context context,int id, string appName, double upData, double downData, double totalDataPerUid, Drawable appIcon = null)
+		public AppData (Context context,string appName, double upData, double downData, double totalDataPerUid, Drawable appIcon = null)
 		{
 			// constructor
 			this.context = context;
@@ -36,9 +33,6 @@ namespace NetworkMonitor
 			this.upData = upData;
 			this.downData = downData;
 			this.totalDataPerUid = totalDataPerUid;
-			this.upId = id + 100;
-			this.downId = id + 200;
-			this.totalId = id + 300;
 		}
 
 		public void increment(double up, double down, double totalPerUid)
@@ -68,23 +62,20 @@ namespace NetworkMonitor
 			c1.SetText (this.appName, TextView.BufferType.Editable);
 			tr.AddView (c1);
 
-			TextView c2 = new TextView (this.context);
-			c2.SetPadding (7, 7, 7, 7);
-			c2.SetText (this.upDataText, TextView.BufferType.Editable);
-			c2.Id = this.upId;
-			tr.AddView (c2);
+			upTextView = new TextView (this.context);
+			upTextView.SetPadding (7, 7, 7, 7);
+			upTextView.SetText (this.upDataText, TextView.BufferType.Editable);
+			tr.AddView (upTextView);
 
-			TextView c3 = new TextView (this.context);
-			c3.SetPadding (7, 7, 7, 7);
-			c3.SetText (this.downDataText, TextView.BufferType.Editable);
-			c3.Id = this.downId;
-			tr.AddView (c3);
+			downTextView = new TextView (this.context);
+			downTextView.SetPadding (7, 7, 7, 7);
+			downTextView.SetText (this.downDataText, TextView.BufferType.Editable);
+			tr.AddView (downTextView);
 
-			TextView c4 = new TextView (this.context);
-			c4.SetPadding (7, 7, 7, 7);
-			c4.SetText (this.totalDataPerUidText, TextView.BufferType.Editable);
-			c4.Id = this.totalId;
-			tr.AddView (c4);
+			totalTextView = new TextView (this.context);
+			totalTextView.SetPadding (7, 7, 7, 7);
+			totalTextView.SetText (this.totalDataPerUidText, TextView.BufferType.Editable);
+			tr.AddView (totalTextView);
 
 			try {
 				appDataTable.AddView (tr);
@@ -100,17 +91,9 @@ namespace NetworkMonitor
 
 			// Append data in existing row
 
-			TextView c2 = FindViewById<TextView> (this.upId);
-			c2.SetText (this.upDataText, TextView.BufferType.Editable);
-			tr.AddView (c2);
-
-			TextView c3 = FindViewById<TextView> (this.upId);
-			c3.SetText (this.downDataText, TextView.BufferType.Editable);
-			tr.AddView (c3);
-
-			TextView c4 = FindViewById<TextView> (this.upId);
-			c4.SetText (this.totalDataPerUidText, TextView.BufferType.Editable);
-			tr.AddView (c4);
+			upTextView.Text = this.upDataText;
+			downTextView.Text = this.downDataText;
+			totalTextView.Text = this.totalDataPerUidText;
 
 		}
 
@@ -125,30 +108,30 @@ namespace NetworkMonitor
 		{
 			// set table headings to tablelayout
 
-			TextView c0 = new TextView (this.context);
-			c0.SetPadding (7, 7, 7, 7);
-			c0.SetText ("AppIcon", TextView.BufferType.Editable);
-			tr.AddView (c0);
+			TextView o0 = new TextView (this.context);
+			o0.SetPadding (7, 7, 7, 7);
+			o0.SetText ("AppIcon", TextView.BufferType.Editable);
+			tr.AddView (o0);
 
-			TextView c1 = new TextView (this.context);
-			c1.SetPadding (7, 7, 7, 7);
-			c1.SetText ("AppName", TextView.BufferType.Editable);
-			tr.AddView (c1);
+			TextView o1 = new TextView (this.context);
+			o1.SetPadding (7, 7, 7, 7);
+			o1.SetText ("AppName", TextView.BufferType.Editable);
+			tr.AddView (o1);
 
-			TextView c2 = new TextView (this.context);
-			c2.SetPadding (7, 7, 7, 7);
-			c2.SetText ("Upload", TextView.BufferType.Editable);
-			tr.AddView (c2);
+			TextView o2 = new TextView (this.context);
+			o2.SetPadding (7, 7, 7, 7);
+			o2.SetText ("Upload", TextView.BufferType.Editable);
+			tr.AddView (o2);
 
-			TextView c3 = new TextView (this.context);
-			c3.SetPadding (7, 7, 7, 7);
-			c3.SetText ("Download", TextView.BufferType.Editable);
-			tr.AddView (c3);
+			TextView o3 = new TextView (this.context);
+			o3.SetPadding (7, 7, 7, 7);
+			o3.SetText ("Download", TextView.BufferType.Editable);
+			tr.AddView (o3);
 
-			TextView c4 = new TextView (this.context);
-			c4.SetPadding (7, 7, 7, 7);
-			c4.SetText ("Total", TextView.BufferType.Editable);
-			tr.AddView (c4);
+			TextView o4 = new TextView (this.context);
+			o4.SetPadding (7, 7, 7, 7);
+			o4.SetText ("Total", TextView.BufferType.Editable);
+			tr.AddView (o4);
 
 			try {
 				appDataTable.AddView (tr);
