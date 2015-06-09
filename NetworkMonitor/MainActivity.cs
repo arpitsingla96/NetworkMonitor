@@ -27,7 +27,6 @@ namespace NetworkMonitor
 			// Set headings of table
 			setTableRow ();
 			mainFunction ();
-
 		}
 
 		public void mainFunction()
@@ -68,7 +67,6 @@ namespace NetworkMonitor
 				Log.Debug (uidText, appName);
 			}
 		}
-
 
 		public string getAppNameForUid (int uid)
 		{
