@@ -28,7 +28,8 @@ namespace NetworkMonitor
 			SetContentView (Resource.Layout.Main);
 			appDataTable = FindViewById<TableLayout> (Resource.Id.appData);
 			// Set headings of table
-			setTableRow ();
+			AppData data = new AppData(this, "",0,0,0);
+			data.setTableHeading(appDataTable);
 			mainFunction ();
 		}
 
@@ -130,11 +131,11 @@ namespace NetworkMonitor
 			if (d.ContainsKey(appName)) {
 				data = (AppData)d [appName];
 				data.increment (upData, downData, totalDataPerUid);
-				data.setTableRowToTableLayout (appDataTable);
+				data.addTableRowToTableLayout (appDataTable);
 			} else {
-				data = new AppData (this, appName, appIcon, upData, downData, totalDataPerUid);
+				data = new AppData (this, appName, upData, downData, totalDataPerUid, appIcon);
 				d.Add (appName, data);
-				data.setTableRowToTableLayout (appDataTable);
+				data.addTableRowToTableLayout (appDataTable);
 			}
 		}
 

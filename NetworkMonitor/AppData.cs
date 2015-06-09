@@ -13,7 +13,11 @@ namespace NetworkMonitor
 		private double upData, downData, totalDataPerUid;
 		private string upDataText, downDataText, totalDataPerUidText, appName;
 		private Context context;
-		public AppData (Context context, string appName, Drawable appIcon, double upData, double downData, double totalDataPerUid)
+		public AppData()
+		{
+		}
+
+		public AppData (Context context, string appName, double upData, double downData, double totalDataPerUid, Drawable appIcon = null)
 		{
 			this.context = context;
 			this.tr = new TableRow(this.context);
@@ -32,7 +36,7 @@ namespace NetworkMonitor
 			this.totalDataPerUid += totalPerUid;
 		}
 
-		public void setTableRowToTableLayout(TableLayout appDataTable)
+		public void addTableRowToTableLayout(TableLayout appDataTable)
 		{
 			ImageView c0 = new ImageView (this.context);
 			c0.SetPadding (7, 7, 7, 7);
@@ -75,6 +79,39 @@ namespace NetworkMonitor
 			this.totalDataPerUidText = UnitConverter.unitConversion (this.totalDataPerUid);
 		}
 
+		public void setTableHeading(TableLayout appDataTable)
+		{
+			TextView c0 = new TextView (this.context);
+			c0.SetPadding (7, 7, 7, 7);
+			c0.SetText ("AppIcon", TextView.BufferType.Editable);
+			tr.AddView (c0);
+
+			TextView c1 = new TextView (this.context);
+			c1.SetPadding (7, 7, 7, 7);
+			c1.SetText ("AppName", TextView.BufferType.Editable);
+			tr.AddView (c1);
+
+			TextView c2 = new TextView (this.context);
+			c2.SetPadding (7, 7, 7, 7);
+			c2.SetText ("Upload", TextView.BufferType.Editable);
+			tr.AddView (c2);
+
+			TextView c3 = new TextView (this.context);
+			c3.SetPadding (7, 7, 7, 7);
+			c3.SetText ("Download", TextView.BufferType.Editable);
+			tr.AddView (c3);
+
+			TextView c4 = new TextView (this.context);
+			c4.SetPadding (7, 7, 7, 7);
+			c4.SetText ("Total", TextView.BufferType.Editable);
+			tr.AddView (c4);
+
+			try {
+				appDataTable.AddView (tr);
+			}catch (Exception e) {
+				Console.WriteLine ("{0} Exception caught", e);
+			}
+		}
 	}
 }
 
