@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Graphics.Drawables;
 using Android.Util;
 using System.IO;
+using System.Collections.Generic;
 
 namespace NetworkMonitor
 {
@@ -16,6 +17,8 @@ namespace NetworkMonitor
 	public class MainActivity : Activity
 	{
 		private TableLayout appDataTable;
+		public Dictionary<string, object> d = new Dictionary<string, object>();
+
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -45,24 +48,17 @@ namespace NetworkMonitor
 
 				string upDataText = File.ReadAllText (downFile);
 				string downDataText = File.ReadAllText (upFile);
-				string totalDataPerUidText = "";
 
 				double upData = Convert.ToInt64 (upDataText);
 				double downData = Convert.ToInt64 (downDataText);
 				double totalDataPerUid = upData + downData;
-
-				// Convert bytes to suitable units
-				var unitConverter = new UnitConverter ();
-				upDataText = unitConverter.unitConversion (upData);
-				downDataText = unitConverter.unitConversion (downData);
-				totalDataPerUidText = unitConverter.unitConversion (totalDataPerUid);
 
 				// Get appName and appIcon for each uid
 				string appName = getAppNameForUid (uid);
 				Drawable appIcon = getIconForUid (uid);
 
 				// Appending items to view
-				setTableRow (appName, upDataText, downDataText, totalDataPerUidText, appIcon);
+				setTableRow (appName, upData, downData, totalDataPerUid, appIcon);
 
 				Log.Debug (uidText, appName);
 			}
@@ -128,9 +124,23 @@ namespace NetworkMonitor
 			return appIcon;
 		}
 
-		public void setTableRow (string appName = "AppName", string upDataText = "Upload", string downDataText = "Download", string totalDataPerUidText = "Total", Drawable appIcon = null)
+		public void setTableRow (string appName = "AppName", double upData = 0, double downData = 0, double totalDataPerUid = 0, Drawable appIcon = null)
 		{
 			var tr = new TableRow (this);
+			AppData data;
+			if (d.ContainsKey(appName)) {
+				data = (AppData)d [appName];
+				data.increment (upData, downData, totalDataPerUid);
+			} else {
+				data = new AppData (appIcon, upData, downData, totalDataPerUid);
+				d.Add (appName, data);
+			}
+			// Convert bytes to suitable units
+			var unitConverter = new UnitConverter ();
+			string upDataText = unitConverter.unitConversion (data.upData);
+			string downDataText = unitConverter.unitConversion (data.downData);
+			string totalDataPerUidText = unitConverter.unitConversion (data.totalDataPerUid);
+
 			if (appIcon != null) {
 				ImageView c0 = new ImageView (this);
 				c0.SetPadding (7, 7, 7, 7);
