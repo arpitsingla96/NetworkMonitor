@@ -16,7 +16,7 @@ namespace NetworkMonitor
 	[Activity (Label = "NetworkMonitor", MainLauncher = true, Icon = "@drawable/icon")]
 	public class MainActivity : Activity
 	{
-		private TableLayout appDataTable;
+		protected TableLayout appDataTable;
 		public Dictionary<string, object> d = new Dictionary<string, object>();
 
 
@@ -69,9 +69,9 @@ namespace NetworkMonitor
 			string appName = "";
 			string packageName = "";
 			string[] packagesName = { };
-			if (uid == 2000 || uid == 1000) {
+			if (uid == 1000 || uid==2000) {
 				appName = "System";
-			} else {
+			}else {
 				try {
 					packagesName = PackageManager.GetPackagesForUid (uid);
 				} catch (Exception e) {
@@ -126,56 +126,15 @@ namespace NetworkMonitor
 
 		public void setTableRow (string appName = "AppName", double upData = 0, double downData = 0, double totalDataPerUid = 0, Drawable appIcon = null)
 		{
-			var tr = new TableRow (this);
 			AppData data;
 			if (d.ContainsKey(appName)) {
 				data = (AppData)d [appName];
 				data.increment (upData, downData, totalDataPerUid);
+				data.setTableRowToTableLayout (appDataTable);
 			} else {
-				data = new AppData (appIcon, upData, downData, totalDataPerUid);
+				data = new AppData (this, appName, appIcon, upData, downData, totalDataPerUid);
 				d.Add (appName, data);
-			}
-			// Convert bytes to suitable units
-			var unitConverter = new UnitConverter ();
-			string upDataText = unitConverter.unitConversion (data.upData);
-			string downDataText = unitConverter.unitConversion (data.downData);
-			string totalDataPerUidText = unitConverter.unitConversion (data.totalDataPerUid);
-
-			if (appIcon != null) {
-				ImageView c0 = new ImageView (this);
-				c0.SetPadding (7, 7, 7, 7);
-				c0.SetImageDrawable (appIcon);
-				tr.AddView (c0);
-			} else {
-				TextView c0 = new TextView (this);
-				c0.SetPadding (7, 7, 7, 7);
-				c0.SetText ("AppIcon", TextView.BufferType.Editable);
-				tr.AddView (c0);
-			}
-			TextView c1 = new TextView (this);
-			c1.SetPadding (7, 7, 7, 7);
-			if (appName != "AppName") {
-				c1.TextSize = 20;
-				c1.SetWidth (225);
-			}
-			c1.SetText (appName, TextView.BufferType.Editable);
-			TextView c2 = new TextView (this);
-			c2.SetPadding (7, 7, 7, 7);
-			c2.SetText (upDataText, TextView.BufferType.Editable);
-			TextView c3 = new TextView (this);
-			c3.SetPadding (7, 7, 7, 7);
-			c3.SetText (downDataText, TextView.BufferType.Editable);
-			TextView c4 = new TextView (this);
-			c4.SetPadding (7, 7, 7, 7);
-			c4.SetText (totalDataPerUidText, TextView.BufferType.Editable);
-			tr.AddView (c1);
-			tr.AddView (c2);
-			tr.AddView (c3);
-			tr.AddView (c4);
-			try {
-				appDataTable.AddView (tr);
-			} catch (Exception e) {
-				Console.WriteLine ("{0} Exception caught", e);
+				data.setTableRowToTableLayout (appDataTable);
 			}
 		}
 

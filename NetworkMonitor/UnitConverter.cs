@@ -4,13 +4,13 @@ namespace NetworkMonitor
 {
 	public class UnitConverter
 	{
-		public string dataText ;
 		public UnitConverter ()
 		{
 		}
 
-		public string unitConversion (double data)
+		public static string unitConversion (double data)
 		{
+			string dataText = "";
 			if (data < 1024) {
 				data = Math.Round (data, 2);
 				dataText = data + "B";
