@@ -1,13 +1,22 @@
 ﻿using System;
 
-using Android.Graphics.Drawables;
-using Android.Widget;
+using Android.App;
 using Android.Content;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using Android.OS;
+using Android.Graphics.Drawables;
+using Android.Util;
+using System.IO;
+using System.Collections.Generic;
+
 
 namespace NetworkMonitor
 {
-	public class AppData
+	public class AppData : Activity
 	{
+		private int upId, downId, totalId;
 		private TableRow tr = null;
 		private Drawable appIcon;
 		private double upData, downData, totalDataPerUid;
@@ -17,8 +26,9 @@ namespace NetworkMonitor
 		{
 		}
 
-		public AppData (Context context, string appName, double upData, double downData, double totalDataPerUid, Drawable appIcon = null)
+		public AppData (Context context,int id, string appName, double upData, double downData, double totalDataPerUid, Drawable appIcon = null)
 		{
+			// constructor
 			this.context = context;
 			this.tr = new TableRow(this.context);
 			this.appName = appName;
@@ -26,11 +36,14 @@ namespace NetworkMonitor
 			this.upData = upData;
 			this.downData = downData;
 			this.totalDataPerUid = totalDataPerUid;
-			setTexts ();
+			this.upId = id + 100;
+			this.downId = id + 200;
+			this.totalId = id + 300;
 		}
 
 		public void increment(double up, double down, double totalPerUid)
 		{
+			// called if the appName exists in the dictionary
 			this.upData += up;
 			this.downData += down;
 			this.totalDataPerUid += totalPerUid;
@@ -38,6 +51,11 @@ namespace NetworkMonitor
 
 		public void addTableRowToTableLayout(TableLayout appDataTable)
 		{
+			//Assign values to texts
+			setTexts ();
+
+			// Add new row in table view
+
 			ImageView c0 = new ImageView (this.context);
 			c0.SetPadding (7, 7, 7, 7);
 			c0.SetImageDrawable (this.appIcon);
@@ -53,16 +71,19 @@ namespace NetworkMonitor
 			TextView c2 = new TextView (this.context);
 			c2.SetPadding (7, 7, 7, 7);
 			c2.SetText (this.upDataText, TextView.BufferType.Editable);
+			c2.Id = this.upId;
 			tr.AddView (c2);
 
 			TextView c3 = new TextView (this.context);
 			c3.SetPadding (7, 7, 7, 7);
 			c3.SetText (this.downDataText, TextView.BufferType.Editable);
+			c3.Id = this.downId;
 			tr.AddView (c3);
 
 			TextView c4 = new TextView (this.context);
 			c4.SetPadding (7, 7, 7, 7);
 			c4.SetText (this.totalDataPerUidText, TextView.BufferType.Editable);
+			c4.Id = this.totalId;
 			tr.AddView (c4);
 
 			try {
@@ -70,6 +91,27 @@ namespace NetworkMonitor
 			}catch (Exception e) {
 				Console.WriteLine ("{0} Exception caught", e);
 			}
+		}
+
+		public void appendTableRow(TableLayout appDataTable)
+		{
+			//Assign values to texts
+			setTexts ();
+
+			// Append data in existing row
+
+			TextView c2 = FindViewById<TextView> (this.upId);
+			c2.SetText (this.upDataText, TextView.BufferType.Editable);
+			tr.AddView (c2);
+
+			TextView c3 = FindViewById<TextView> (this.upId);
+			c3.SetText (this.downDataText, TextView.BufferType.Editable);
+			tr.AddView (c3);
+
+			TextView c4 = FindViewById<TextView> (this.upId);
+			c4.SetText (this.totalDataPerUidText, TextView.BufferType.Editable);
+			tr.AddView (c4);
+
 		}
 
 		private void setTexts()
@@ -81,6 +123,8 @@ namespace NetworkMonitor
 
 		public void setTableHeading(TableLayout appDataTable)
 		{
+			// set table headings to tablelayout
+
 			TextView c0 = new TextView (this.context);
 			c0.SetPadding (7, 7, 7, 7);
 			c0.SetText ("AppIcon", TextView.BufferType.Editable);

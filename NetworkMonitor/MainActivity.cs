@@ -16,6 +16,7 @@ namespace NetworkMonitor
 	[Activity (Label = "NetworkMonitor", MainLauncher = true, Icon = "@drawable/icon")]
 	public class MainActivity : Activity
 	{
+		private static int id = 1;
 		protected TableLayout appDataTable;
 		public Dictionary<string, object> d = new Dictionary<string, object>();
 
@@ -27,9 +28,11 @@ namespace NetworkMonitor
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 			appDataTable = FindViewById<TableLayout> (Resource.Id.appData);
+
 			// Set headings of table
-			AppData data = new AppData(this, "",0,0,0);
+			AppData data = new AppData(this,0, "",0,0,0);
 			data.setTableHeading(appDataTable);
+
 			mainFunction ();
 		}
 
@@ -129,13 +132,16 @@ namespace NetworkMonitor
 		{
 			AppData data;
 			if (d.ContainsKey(appName)) {
+				// If the dictionary contains appName
 				data = (AppData)d [appName];
 				data.increment (upData, downData, totalDataPerUid);
-				data.addTableRowToTableLayout (appDataTable);
+				data.appendTableRow (appDataTable);
 			} else {
-				data = new AppData (this, appName, upData, downData, totalDataPerUid, appIcon);
+				// If the dictionary does not contain appName
+				data = new AppData (this, id, appName, upData, downData, totalDataPerUid, appIcon);
 				d.Add (appName, data);
 				data.addTableRowToTableLayout (appDataTable);
+				id++;
 			}
 		}
 
