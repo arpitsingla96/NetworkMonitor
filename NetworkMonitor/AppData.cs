@@ -9,7 +9,7 @@ using Android.Util;
 
 namespace NetworkMonitor
 {
-	public class AppData : Activity
+	public class AppData
 	{
 		private TableRow tr = null;
 		private Drawable appIcon;

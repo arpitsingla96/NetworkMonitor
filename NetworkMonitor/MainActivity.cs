@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace NetworkMonitor
 {
-	[Activity (Label = "NetworkMonitor", MainLauncher = true, Icon = "@drawable/icon")]
+	[Activity (Label = "@string/app_name", MainLauncher = true, Icon = "@drawable/icon")]
 	public class MainActivity : Activity
 	{
 		private static int id = 1;
