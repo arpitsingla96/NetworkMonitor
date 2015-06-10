@@ -35,13 +35,13 @@ namespace NetworkMonitor
 			data.setTableHeading(appDataTable);
 		}
 
-		protected override void OnStart ()
+		protected override void OnPause ()
 		{
 			timer = new Timer ();
 			timer.Elapsed += new ElapsedEventHandler (mainFunction);
 			timer.Interval = 5000;
 			timer.Start ();
-			base.OnStart ();
+			base.OnPause ();
 		}
 
 		public void mainFunction(object source, ElapsedEventArgs e)
@@ -145,7 +145,7 @@ namespace NetworkMonitor
 			if (d.ContainsKey(appName)) {
 				// If the dictionary contains appName
 				data = (AppData)d [appName];
-				data.increment (upData, downData, totalDataPerUid);
+				data.setSpeedAndIncrement (upData, downData, totalDataPerUid);
 				data.appendTableRow (appDataTable);
 			} else {
 				// If the dictionary does not contain appName

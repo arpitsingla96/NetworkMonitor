@@ -8,8 +8,11 @@ namespace NetworkMonitor
 		{
 		}
 
-		public static string unitConversion (double data)
+		public static string unitConversion (double data, int type)
 		{
+			// type = 0 means data conversion
+			// type = 1 means unit conversion
+
 			string dataText = "";
 			if (data < 1024) {
 				data = Math.Round (data, 2);
@@ -29,6 +32,9 @@ namespace NetworkMonitor
 				data = data / 1024;
 				data = Math.Round (data, 2);
 				dataText = data + "GB";
+			}
+			if (type == 1) {
+				dataText = dataText + "/s" ;
 			}
 			return dataText;
 		}

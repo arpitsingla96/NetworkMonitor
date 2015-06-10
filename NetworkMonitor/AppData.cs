@@ -13,10 +13,11 @@ namespace NetworkMonitor
 	{
 		private TableRow tr = null;
 		private Drawable appIcon;
-		private double upData, downData, totalDataPerUid;
-		private string upDataText, downDataText, totalDataPerUidText, appName;
+		private double upData, downData, totalDataPerUid, upSpeed, downSpeed, totalSpeedPerUid;
+		private string upDataText, downDataText, totalDataPerUidText, appName, upSpeedText, downSpeedText, totalSpeedPerUidText;
 		private Context context;
 		private TextView upTextView, downTextView, totalTextView;
+
 		public AppData(Context context)
 		{
 			this.context = context;
@@ -33,14 +34,25 @@ namespace NetworkMonitor
 			this.upData = upData;
 			this.downData = downData;
 			this.totalDataPerUid = totalDataPerUid;
+			this.upSpeed = 0;
+			this.downSpeed = 0;
+			this.totalSpeedPerUid = 0;
+			this.upSpeedText = "";
+			this.downSpeedText = "";
+			this.totalSpeedPerUidText = "";
 		}
 
-		public void increment(double up, double down, double totalPerUid)
+		public void setSpeedAndIncrement(double up, double down, double totalPerUid)
 		{
+			// getting speeds
+			this.upSpeed = up - this.upData;
+			this.downSpeed = down - this.downData;
+			this.totalSpeedPerUid = down - this.totalDataPerUid;
+
 			// called if the appName exists in the dictionary
-			this.upData += up;
-			this.downData += down;
-			this.totalDataPerUid += totalPerUid;
+			this.upData = up;
+			this.downData = down;
+			this.totalDataPerUid = totalPerUid;
 		}
 
 		public void addTableRowToTableLayout(TableLayout appDataTable)
@@ -82,6 +94,8 @@ namespace NetworkMonitor
 			}catch (Exception e) {
 				Console.WriteLine ("{0} Exception caught", e);
 			}
+
+			Log.Debug (upSpeedText, downSpeedText);
 		}
 
 		public void appendTableRow(TableLayout appDataTable)
@@ -95,13 +109,18 @@ namespace NetworkMonitor
 			downTextView.Text = this.downDataText;
 			totalTextView.Text = this.totalDataPerUidText;
 
+			Log.Debug (upSpeedText, downSpeedText);
 		}
 
 		private void setTexts()
 		{
-			this.downDataText = UnitConverter.unitConversion (this.downData);
-			this.upDataText = UnitConverter.unitConversion (this.upData);
-			this.totalDataPerUidText = UnitConverter.unitConversion (this.totalDataPerUid);
+			this.downDataText = UnitConverter.unitConversion (this.downData, 0);
+			this.upDataText = UnitConverter.unitConversion (this.upData, 0);
+			this.totalDataPerUidText = UnitConverter.unitConversion (this.totalDataPerUid, 0);
+
+			this.upSpeedText = UnitConverter.unitConversion (this.upSpeed, 1);
+			this.downSpeedText = UnitConverter.unitConversion (this.downSpeed, 1);
+			this.totalSpeedPerUidText = UnitConverter.unitConversion (this.totalSpeedPerUid, 1);
 		}
 
 		public void setTableHeading(TableLayout appDataTable)
