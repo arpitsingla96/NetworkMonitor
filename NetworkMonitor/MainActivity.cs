@@ -1,15 +1,16 @@
 ﻿using System;
 
+using System.Collections.Generic;
+using System.IO;
 using Android.App;
 using Android.Content;
+using Android.Graphics.Drawables;
+using Android.OS;
 using Android.Runtime;
+using Android.Util;
 using Android.Views;
 using Android.Widget;
-using Android.OS;
-using Android.Graphics.Drawables;
-using Android.Util;
-using System.IO;
-using System.Collections.Generic;
+using System.Timers;
 
 namespace NetworkMonitor
 {
@@ -19,7 +20,7 @@ namespace NetworkMonitor
 		private static int id = 1;
 		protected TableLayout appDataTable;
 		public Dictionary<string, object> d = new Dictionary<string, object>();
-
+		private Timer timer;
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -32,11 +33,18 @@ namespace NetworkMonitor
 			// Set headings of table
 			AppData data = new AppData(this);
 			data.setTableHeading(appDataTable);
-
-			mainFunction ();
 		}
 
-		public void mainFunction()
+		protected override void OnStart ()
+		{
+			timer = new Timer ();
+			timer.Elapsed += new ElapsedEventHandler (mainFunction);
+			timer.Interval = 5000;
+			timer.Start ();
+			base.OnStart ();
+		}
+
+		public void mainFunction(object source, ElapsedEventArgs e)
 		{
 			const string dirpath = "/proc/uid_stat";
 			// Getting all the subdirectories /proc/uid_stat/*
