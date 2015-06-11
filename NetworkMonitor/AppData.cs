@@ -42,21 +42,18 @@ namespace NetworkMonitor
 			this.totalSpeedPerUidText = "";
 		}
 
-		public void setSpeed(double up, double down, double totalPerUid)
-		{
-			// getting speeds
-			this.upSpeed = up - this.upData;
-			this.downSpeed = down - this.downData;
-			this.totalSpeedPerUid = totalPerUid - this.totalDataPerUid;
-
-		}
-
-		public void setIncrement(double up, double down, double totalPerUid)
+		public void setSpeedAndIncrement(double up, double down, double totalPerUid)
 		{
 			// called if the appName exists in the dictionary
 			this.upData  = up;
 			this.downData = down;
 			this.totalDataPerUid = totalPerUid;
+
+			// getting speeds
+			this.upSpeed = up - this.upData;
+			this.downSpeed = down - this.downData;
+			this.totalSpeedPerUid = totalPerUid - this.totalDataPerUid;
+
 		}
 
 		public void addTableRowToTableLayout(TableLayout appDataTable)

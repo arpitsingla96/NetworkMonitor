@@ -21,7 +21,6 @@ namespace NetworkMonitor
 		public Dictionary<string, object> d = new Dictionary<string, object>();
 		private Dictionary<string, List<int>> appNameToUid = new Dictionary<string, List<int>>();
 		private const string dirpath = "/proc/uid_stat/";
-		private Timer timer;
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -36,6 +35,8 @@ namespace NetworkMonitor
 			data.setTableHeading(appDataTable);
 
 			createDictionary ();
+
+			mainFunction ();
 		}
 
 		public void createDictionary()
@@ -59,28 +60,19 @@ namespace NetworkMonitor
 				}
 			}
 
-			foreach (string appName in this.appNameToUid.Keys) {
-				Log.Debug ("appName", appName);
-				double upload, download, totalDataPerUid = 0;
-				foreach (int uid in this.appNameToUid[appName]) {
-					Log.Debug ("uid", uid.ToString ());
-					double[] data = getDataFromUid (uid);
-					upload = data [0];
-					download = data [1];
-					totalDataPerUid = data [2];
-					Log.Debug (upload.ToString (), download.ToString ());
-				}
-			}
 		}
 
 		protected double[] getDataFromUid(int uid)
 		{
+			// set paths to file
 			string downFile = dirpath + uid + "/tcp_rcv";
 			string upFile = dirpath + uid + "/tcp_snd";
-			
+
+			// read data from file as strings
 			string upDataText = File.ReadAllText (downFile);
 			string downDataText = File.ReadAllText (upFile);
-			
+
+			//convert data read from file to double
 			double upData = Convert.ToInt64 (upDataText);
 			double downData = Convert.ToInt64 (downDataText);
 			double totalDataPerUid = upData + downData;
@@ -89,28 +81,30 @@ namespace NetworkMonitor
 			return data;
 		}
 
-//		protected override void OnPause ()
-//		{
-//			timer = new Timer ();
-//			timer.Elapsed += new ElapsedEventHandler (mainFunction);
-//			timer.Interval = 5000;
-//			timer.Start ();
-//			base.OnPause ();
-//		}
+		protected override void OnPause ()
+		{
+			
+		}
 
-//		public void mainFunction(object source, ElapsedEventArgs e)
-//		{
-//
-//			// Reading files which contain data in each subdirectory
-//
-//			// Get appName and appIcon for each uid
-//			Drawable appIcon = getIconForUid (uid);
-//
-//			// Appending items to view
-//			setTableRow (appName, upData, downData, totalDataPerUid, appIcon);
-//
-//			Log.Debug (uidText, appName);
-//		}
+		public void mainFunction()
+		{
+			foreach (string appName in this.appNameToUid.Keys) 
+			{
+				double upData = 0, downData = 0, totalDataPerUid = 0;
+				Drawable appIcon = null;
+				
+				foreach (int uid in this.appNameToUid[appName]) {
+					double[] data = getDataFromUid (uid);
+					upData = data [0];
+					downData = data [1];
+					totalDataPerUid = data [2];
+					appIcon = getIconForUid (uid);
+				}
+				// Appending items to view
+				setTableRow (appName, upData, downData, totalDataPerUid, appIcon);
+			}
+
+		}
 
 		public string getAppNameForUid (int uid)
 		{
@@ -181,8 +175,7 @@ namespace NetworkMonitor
 			if (d.ContainsKey(appName)) {
 				// If the dictionary contains appName
 				data = (AppData)d [appName];
-				data.setSpeed (upData, downData, totalDataPerUid);
-				data.setIncrement (upData, downData, totalDataPerUid);
+				data.setSpeedAndIncrement (upData, downData, totalDataPerUid);
 				data.appendTableRow (appDataTable);
 			} else {
 				// If the dictionary does not contain appName
