@@ -2,4 +2,5 @@
 <resources>
 	<string name="hello">Hello World, Click Me!</string>
 	<string name="app_name">Network Monitor</string>
+	<string name="path">/proc/uid_stat</string>
 </resources>

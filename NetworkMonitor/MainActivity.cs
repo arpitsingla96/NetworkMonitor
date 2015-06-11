@@ -20,7 +20,7 @@ namespace NetworkMonitor
 		protected TableLayout appDataTable;
 		public Dictionary<string, object> d = new Dictionary<string, object>();
 		private Dictionary<string, List<int>> appNameToUid = new Dictionary<string, List<int>>();
-		private const string dirpath = "/proc/uid_stat";
+		private const string dirpath = "/proc/uid_stat/";
 		private Timer timer;
 
 		protected override void OnCreate (Bundle bundle)
@@ -61,10 +61,32 @@ namespace NetworkMonitor
 
 			foreach (string appName in this.appNameToUid.Keys) {
 				Log.Debug ("appName", appName);
+				double upload, download, totalDataPerUid = 0;
 				foreach (int uid in this.appNameToUid[appName]) {
 					Log.Debug ("uid", uid.ToString ());
+					double[] data = getDataFromUid (uid);
+					upload = data [0];
+					download = data [1];
+					totalDataPerUid = data [2];
+					Log.Debug (upload.ToString (), download.ToString ());
 				}
 			}
+		}
+
+		protected double[] getDataFromUid(int uid)
+		{
+			string downFile = dirpath + uid + "/tcp_rcv";
+			string upFile = dirpath + uid + "/tcp_snd";
+			
+			string upDataText = File.ReadAllText (downFile);
+			string downDataText = File.ReadAllText (upFile);
+			
+			double upData = Convert.ToInt64 (upDataText);
+			double downData = Convert.ToInt64 (downDataText);
+			double totalDataPerUid = upData + downData;
+
+			double[] data = { upData, downData, totalDataPerUid };
+			return data;
 		}
 
 //		protected override void OnPause ()
@@ -80,15 +102,6 @@ namespace NetworkMonitor
 //		{
 //
 //			// Reading files which contain data in each subdirectory
-//			string downFile = subDirectory + "/tcp_rcv";
-//			string upFile = subDirectory + "/tcp_snd";
-//
-//			string upDataText = File.ReadAllText (downFile);
-//			string downDataText = File.ReadAllText (upFile);
-//
-//			double upData = Convert.ToInt64 (upDataText);
-//			double downData = Convert.ToInt64 (downDataText);
-//			double totalDataPerUid = upData + downData;
 //
 //			// Get appName and appIcon for each uid
 //			Drawable appIcon = getIconForUid (uid);
