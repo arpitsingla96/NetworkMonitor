@@ -14,7 +14,7 @@ namespace NetworkMonitor
 		private TableRow tr = null;
 		private Drawable appIcon;
 		private double upData, downData, totalDataPerUid, upSpeed, downSpeed, totalSpeedPerUid;
-		private string upDataText, downDataText, totalDataPerUidText, appName, upSpeedText, downSpeedText, totalSpeedPerUidText;
+		private string appName, upDataText, downDataText, totalDataPerUidText, upSpeedText, downSpeedText, totalSpeedPerUidText;
 		private Context context;
 		private TextView upTextView, downTextView, totalTextView;
 
@@ -42,15 +42,19 @@ namespace NetworkMonitor
 			this.totalSpeedPerUidText = "";
 		}
 
-		public void setSpeedAndIncrement(double up, double down, double totalPerUid)
+		public void setSpeed(double up, double down, double totalPerUid)
 		{
 			// getting speeds
 			this.upSpeed = up - this.upData;
 			this.downSpeed = down - this.downData;
-			this.totalSpeedPerUid = down - this.totalDataPerUid;
+			this.totalSpeedPerUid = totalPerUid - this.totalDataPerUid;
 
+		}
+
+		public void setIncrement(double up, double down, double totalPerUid)
+		{
 			// called if the appName exists in the dictionary
-			this.upData = up;
+			this.upData  = up;
 			this.downData = down;
 			this.totalDataPerUid = totalPerUid;
 		}
